@@ -102,7 +102,7 @@ def run_baseline(model_name, dataset_name, **kwargs):
 
     # ========== 第十一步：模型评估 ==========
     try:
-        test_result = trainer.evaluate(test_data, model_file='./AgentCF-Sep-07-2024_16-09-29.pth',
+        test_result = trainer.evaluate(test_data, model_file='./saved/AgentCF/checkpoint_epoch_0.pth',
                                       load_best_model=False, show_progress=config["show_progress"])
         print(test_result)                              # 🐛调试点：打印测试结果
         logger.info("✅ 模型评估完成")

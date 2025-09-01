@@ -21,8 +21,10 @@ loaded: ~
 evaluation: basic  # Three modes in evaluation: basic, retrieval, sequential
 all_update_rounds: 2
 update_neg_item: ~
-test_only: ~
+test_only: ~ 
 item_representation: direct
+max_his_len: 10
+MAX_ITEM_LIST_LENGTH: 10
 
 # TODO: prompt in backward part
 user_prompt_system_role: "You are a CD enthusiast.\n Here is your previous self-introduction, exhibiting your past preferences and dislikes:\n '$user_description'."

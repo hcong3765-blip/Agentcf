@@ -821,7 +821,7 @@ class AgentCF(SequentialRecommender):
     def get_batch_inputs(self, interaction, idxs, i, user_embedding):
         user_his = interaction[self.ITEM_SEQ]
         user_his_len = interaction[self.ITEM_SEQ_LEN]
-        real_his_len = min(self.max_his_len, user_his_len[i].item())
+        real_his_len = min(self.max_his_len or 10, user_his_len[i].item())
         user_his_text = [str(j+1) + '. ' + self.item_text[user_his[i, user_his_len[i].item() - real_his_len + j].item()] \
                 for j in range(real_his_len)]
 
