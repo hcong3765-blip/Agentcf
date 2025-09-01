@@ -22,3 +22,14 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 The positive CD has the following updated information: 'The Very Best of Chicago: Only the Beginning - a harmonious blend for classic rock fans, this timeless collection with a touch of horns aligns with CD lovers' preferences for diverse, enduring tracks, avoiding niche genres for a widely resonant experience.'
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+There are two candidate CDs. 
+ The first CD has the following information: The CD is called 'Highlights: The Very Best of Yes'. The category of this CD is: 'Rock; Progressive; Progressive Rock'.. 
+ The second CD has the following information: ounds of Summer: Very Best of The Beach Boys') is: 'Capturing the essence of Pop, Oldies, and Baroque Pop, this Beach Boys compilation is perfect for listeners who cherish nostalgic, uplifting tunes with timeless appeal and a strong sense of familiarity.'
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much. 
+
+The positive CD has the following updated information: The CD is called 'Highlights: The Very Best of Yes'. The category of this CD is: 'Rock; Progressive; Progressive Rock'.
+

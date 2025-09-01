@@ -39,21 +39,20 @@ def get_model(model_name):
     参数：model_name - 模型名称字符串（如'AgentCF'）
     返回：模型类对象
     """
-    # 第一步：检查自定义模型是否存在
-    if importlib.util.find_spec(f'model.{model_name.lower()}', __name__):
-        # 💡语法解释：importlib.util.find_spec()检查模块是否存在，不实际导入
-        # f'model.{model_name.lower()}'构造模块路径，如'model.agentcf'
-        
-        # 第二步：动态导入模块
-        model_module = importlib.import_module(f'model.{model_name.lower()}', __name__)
-        # 💡语法解释：importlib.import_module()动态导入模块，相当于import model.agentcf
-        
-        # 第三步：从模块中获取类
+    # 第一步：尝试从agentcf.model导入
+    try:
+        model_module = importlib.import_module(f'agentcf.model.{model_name.lower()}')
         model_class = getattr(model_module, model_name)
-        # 💡语法解释：getattr(对象, 属性名)获取对象的属性，这里获取AgentCF类
-        
         return model_class
-    else:
+    except ImportError:
+        pass
+
+    # 第二步：尝试从model导入（旧方式）
+    try:
+        model_module = importlib.import_module(f'model.{model_name.lower()}')
+        model_class = getattr(model_module, model_name)
+        return model_class
+    except ImportError:
         # 如果自定义模型不存在，使用RecBole的默认模型加载方式
         return recbole_get_model(model_name)
 

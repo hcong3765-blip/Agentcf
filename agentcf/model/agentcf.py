@@ -234,7 +234,7 @@ class AgentCF(SequentialRecommender):
                         item_class = 'CDs'
                     if item_id not in self.item_token_id:
                         continue
-                    role_description_string = f"The CD is called '{self.item_text[self.item_token_id[item_id]]}'. The category of this CD is: '{item_class}'."
+                    role_description_string = f"The CD is called '{self.item_text[self.item_token_id[item_id]]}'."
                     # role_description_string = f"The CD is called '{self.item_text[self.item_token_id[item_id]]}'."
                     item_context[self.item_token_id[item_id]] = \
                         {'agent_type':'itemagent',
@@ -482,85 +482,101 @@ class AgentCF(SequentialRecommender):
 
 
     def calculate_loss(self, interaction):
-        print(f"User ID is : {interaction[self.USER_ID]}")
-        print(f"Item ID is : {interaction[self.ITEM_ID]}")
-        batch_user = interaction[self.USER_ID]
-        batch_pos_item = interaction[self.ITEM_ID]
-        batch_neg_item = interaction[self.NEG_ITEM_ID]
-        batch_size = batch_user.size(0)
+        try:
+            print(f"User ID is : {interaction[self.USER_ID]}")
+            print(f"Item ID is : {interaction[self.ITEM_ID]}")
+            batch_user = interaction[self.USER_ID]
+            batch_pos_item = interaction[self.ITEM_ID]
+            batch_neg_item = interaction[self.NEG_ITEM_ID]
+            batch_size = batch_user.size(0)
 
-        # have_recorded_idx = set()
+            # have_recorded_idx = set()
 
-        for i in range(self.config['all_update_rounds']):
-            print("~"*20 + f"{i}-th round update!" + "~"*20 + '\n')
-            first_time = set()
-            # TODO: forward part i.e. candidate item selection
-            user_forward_description, pos_item_forward_description, neg_item_forward_description = [], [], []
-            for j in range(batch_size):
-                user_forward_description.append(self.user_agents[int(batch_user[j])].update_memory[-1])
-                pos_item_forward_description.append(self.item_agents[int(batch_pos_item[j])].update_memory[-1])
-                neg_item_forward_description.append(self.item_agents[int(batch_neg_item[j])].update_memory[-1])
-            system_selections, system_reasons = self.forward(batch_user, batch_pos_item, batch_neg_item)
-            accuracy = self.convert_system_selections_to_accuracy(system_selections, batch_pos_item, batch_neg_item)
-            print(f"Current accuracy is {sum(accuracy) / len(accuracy)}")
+            for i in range(self.config['all_update_rounds']):
+                try:
+                    print("~"*20 + f"{i}-th round update!" + "~"*20 + '\n')
+                    first_time = set()
+                    # TODO: forward part i.e. candidate item selection
+                    user_forward_description, pos_item_forward_description, neg_item_forward_description = [], [], []
+                    for j in range(batch_size):
+                        user_forward_description.append(self.user_agents[int(batch_user[j])].update_memory[-1])
+                        pos_item_forward_description.append(self.item_agents[int(batch_pos_item[j])].update_memory[-1])
+                        neg_item_forward_description.append(self.item_agents[int(batch_neg_item[j])].update_memory[-1])
+                    system_selections, system_reasons = self.forward(batch_user, batch_pos_item, batch_neg_item)
 
-            backward_system_reasons, backward_user, backward_pos_item, backward_neg_item, backward_system_reasons_true, backward_user_true, backward_pos_item_true, backward_neg_item_true = [], [], [], [], [], [], [], []
-            for j, acc in enumerate(accuracy):
-                if acc == 0: # record wrong choices
-                    backward_pos_item.append(int(batch_pos_item[j]))
-                    backward_neg_item.append(int(batch_neg_item[j]))
-                    backward_user.append(int(batch_user[j]))
-                    backward_system_reasons.append(system_reasons[j])
-                else: # record right choices
-                    if i == 0:
-                        first_time.add(int(batch_user[j]))
-                        backward_user_true.append(int(batch_user[j]))
-                        backward_pos_item_true.append(int(batch_pos_item[j]))
-                        backward_neg_item_true.append(int(batch_neg_item[j]))
-                        backward_system_reasons_true.append(system_reasons[j])
-                    elif int(batch_user[j]) not in first_time:
-                        backward_user_true.append(int(batch_user[j]))
-                        backward_pos_item_true.append(int(batch_pos_item[j]))
-                        backward_neg_item_true.append(int(batch_neg_item[j]))
-                        backward_system_reasons_true.append(system_reasons[j])
+                    accuracy = self.convert_system_selections_to_accuracy(system_selections, batch_pos_item, batch_neg_item)
+                    print(f"Current accuracy is {sum(accuracy) / len(accuracy)}")
 
-            # if sum(accuracy) / len(accuracy) > 0.9: break
-            print(f"the user who are about to be updated: {backward_user}")
-            self.backward(backward_system_reasons, backward_user, backward_pos_item, backward_neg_item)
-            if i == 0 and len(backward_user_true):
-                self.backward_true(backward_system_reasons_true, backward_user_true, backward_pos_item_true, backward_neg_item_true, True)
-        self.backward_true(backward_system_reasons_true, backward_user_true, backward_pos_item_true,
-                               backward_neg_item_true, False)
+                    backward_system_reasons, backward_user, backward_pos_item, backward_neg_item, backward_system_reasons_true, backward_user_true, backward_pos_item_true, backward_neg_item_true = [], [], [], [], [], [], [], []
+                    for j, acc in enumerate(accuracy):
+                        if acc == 0: # record wrong choices
+                            backward_pos_item.append(int(batch_pos_item[j]))
+                            backward_neg_item.append(int(batch_neg_item[j]))
+                            backward_user.append(int(batch_user[j]))
+                            backward_system_reasons.append(system_reasons[j])
+                        else: # record right choices
+                            if i == 0:
+                                first_time.add(int(batch_user[j]))
+                                backward_user_true.append(int(batch_user[j]))
+                                backward_pos_item_true.append(int(batch_pos_item[j]))
+                                backward_neg_item_true.append(int(batch_neg_item[j]))
+                                backward_system_reasons_true.append(system_reasons[j])
+                            elif int(batch_user[j]) not in first_time:
+                                backward_user_true.append(int(batch_user[j]))
+                                backward_pos_item_true.append(int(batch_pos_item[j]))
+                                backward_neg_item_true.append(int(batch_neg_item[j]))
+                                backward_system_reasons_true.append(system_reasons[j])
 
+                    # if sum(accuracy) / len(accuracy) > 0.9: break
+                    print(f"the user who are about to be updated: {backward_user}")
+                    self.backward(backward_system_reasons, backward_user, backward_pos_item, backward_neg_item)
+                    if i == 0 and len(backward_user_true):
+                        self.backward_true(backward_system_reasons_true, backward_user_true, backward_pos_item_true, backward_neg_item_true, True)
+                except Exception as round_error:
+                    print(f"❌ Round {i} update failed: {str(round_error)}")
+                    print(f"Error type: {type(round_error).__name__}")
+                    continue  # Continue to the next round
 
-        if self.config['evaluation'] == 'rag':
-            system_reasons_embeddings = self.generate_embedding(system_reasons)
-            for i, user in enumerate(batch_user):
-                if i < len(system_reasons) and i < len(system_reasons_embeddings):
-                    self.rec_agent.user_examples[int(user)][(user_forward_description[i], self.item_text[int(batch_pos_item[i])], self.item_text[int(batch_neg_item[i])], pos_item_forward_description[i], neg_item_forward_description[i], accuracy[i], system_reasons[i])] = system_reasons_embeddings[i]
-        else:
-            for i, user in enumerate(batch_user):
-                if i < len(system_reasons):
-                    self.rec_agent.user_examples[int(user)][(user_forward_description[i], self.item_text[int(batch_pos_item[i])], self.item_text[int(batch_neg_item[i])], pos_item_forward_description[i], neg_item_forward_description[i], accuracy[i], system_reasons[i])] = None
+            # Final backward call for true examples
+            if len(backward_user_true) > 0:
+                self.backward_true(backward_system_reasons_true, backward_user_true, backward_pos_item_true,
+                                   backward_neg_item_true, False)
 
-        self.logging_after_updation(batch_user, batch_pos_item, batch_neg_item)
-        batch_pos_item_descriptions = []
-        batch_neg_item_descriptions = []
-        for i in range(batch_size):
-            self.user_agents[int(batch_user[i])].memory_1.append(self.user_agents[int(batch_user[i])].update_memory[-1])
-            batch_pos_item_descriptions.append(self.item_agents[int(batch_pos_item[i])].update_memory[-1])
-            batch_neg_item_descriptions.append(self.item_agents[int(batch_neg_item[i])].update_memory[-1])
+            if self.config['evaluation'] == 'rag':
+                system_reasons_embeddings = self.generate_embedding(system_reasons)
+                for i, user in enumerate(batch_user):
+                    if i < len(system_reasons) and i < len(system_reasons_embeddings):
+                        self.rec_agent.user_examples[int(user)][(user_forward_description[i], self.item_text[int(batch_pos_item[i])], self.item_text[int(batch_neg_item[i])], pos_item_forward_description[i], neg_item_forward_description[i], accuracy[i], system_reasons[i])] = system_reasons_embeddings[i]
+            else:
+                for i, user in enumerate(batch_user):
+                    if i < len(system_reasons):
+                        self.rec_agent.user_examples[int(user)][(user_forward_description[i], self.item_text[int(batch_pos_item[i])], self.item_text[int(batch_neg_item[i])], pos_item_forward_description[i], neg_item_forward_description[i], accuracy[i], system_reasons[i])] = None
 
-        if self.config['evaluation'] == 'rag':
-            batch_pos_item_descriptions_embeddings = self.generate_embedding(batch_pos_item_descriptions)
-            batch_neg_item_descriptions_embeddings = self.generate_embedding(batch_neg_item_descriptions)
+            self.logging_after_updation(batch_user, batch_pos_item, batch_neg_item)
+            batch_pos_item_descriptions = []
+            batch_neg_item_descriptions = []
             for i in range(batch_size):
-                self.item_agents[int(batch_pos_item[i])].memory_embedding[batch_pos_item_descriptions[i]] = batch_pos_item_descriptions_embeddings[i]
-                self.item_agents[int(batch_neg_item[i])].memory_embedding[batch_neg_item_descriptions[i]] = batch_neg_item_descriptions_embeddings[i]
-        else:
-            for i in range(batch_size):
-                self.item_agents[int(batch_pos_item[i])].memory_embedding[batch_pos_item_descriptions[i]] = None
-                self.item_agents[int(batch_neg_item[i])].memory_embedding[batch_neg_item_descriptions[i]] = None
+                self.user_agents[int(batch_user[i])].memory_1.append(self.user_agents[int(batch_user[i])].update_memory[-1])
+                batch_pos_item_descriptions.append(self.item_agents[int(batch_pos_item[i])].update_memory[-1])
+                batch_neg_item_descriptions.append(self.item_agents[int(batch_neg_item[i])].update_memory[-1])
+
+            if self.config['evaluation'] == 'rag':
+                batch_pos_item_descriptions_embeddings = self.generate_embedding(batch_pos_item_descriptions)
+                batch_neg_item_descriptions_embeddings = self.generate_embedding(batch_neg_item_descriptions)
+                for i in range(batch_size):
+                    self.item_agents[int(batch_pos_item[i])].memory_embedding[batch_pos_item_descriptions[i]] = batch_pos_item_descriptions_embeddings[i]
+                    self.item_agents[int(batch_neg_item[i])].memory_embedding[batch_neg_item_descriptions[i]] = batch_neg_item_descriptions_embeddings[i]
+            else:
+                for i in range(batch_size):
+                    self.item_agents[int(batch_pos_item[i])].memory_embedding[batch_pos_item_descriptions[i]] = None
+                    self.item_agents[int(batch_neg_item[i])].memory_embedding[batch_neg_item_descriptions[i]] = None
+
+        except Exception as e:
+            print(f"❌ Calculate loss failed: {str(e)}")
+            print(f"Error type: {type(e).__name__}")
+            import traceback
+            print(f"Detailed error: {traceback.format_exc()}")
+            return  # Skip this loss calculation
 
     def logging_during_updation(self, batch_user, system_explanations, user_backward_prompts, pos_item_descriptions_forward, neg_item_descriptions_forward, user_update_descriptions, item_update_memories):
         batch_size = len(batch_user)
@@ -569,7 +585,7 @@ class AgentCF(SequentialRecommender):
             path = osp.join(self.config['record_path'], self.dataset_name, 'record', f'user_record_{self.record_idx}')
             if not os.path.exists(path):
                 os.makedirs(path)
-            with open(osp.join(path, f'user.{str(user_id)}'), 'a') as f:
+            with open(osp.join(path, f'user.{str(user_id)}'), 'a', encoding='utf-8') as f:
                 f.write('~' * 20 + 'Updation during reflection' + '~' * 20 + '\n')
                 f.write(
                     f'There are two candidate CDs. \n The positive CD has the following information: {pos_item_descriptions_forward[i]}. \n The negative CD has the following information: {neg_item_descriptions_forward[i]}\n\n')
@@ -629,7 +645,7 @@ class AgentCF(SequentialRecommender):
             path = osp.join(self.config['record_path'], self.dataset_name, 'record', f'item_record_{self.record_idx}')
             if not os.path.exists(path):
                 os.makedirs(path)
-            with open(osp.join(path, f'item.{str(pos_item_id)}'), 'a') as f:
+            with open(osp.join(path, f'item.{str(pos_item_id)}'), 'a', encoding='utf-8') as f:
                 f.write('~' * 20 + 'New interaction' + '~' * 20 + '\n')
                 f.write(
                     f"You: {self.item_agents[pos_item_id].role_description['item_title']} and the other movie: {self.item_agents[int(batch_neg_item[i])].role_description['item_title']} are recommended to a user.\n\n")
@@ -652,7 +668,7 @@ class AgentCF(SequentialRecommender):
                                 f'item_record_{self.record_idx}')
                 if not os.path.exists(path):
                     os.makedirs(path)
-                with open(osp.join(path, f'item.{str(neg_item_id)}'), 'a') as f:
+                with open(osp.join(path, f'item.{str(neg_item_id)}'), 'a', encoding='utf-8') as f:
                     f.write('~' * 20 + 'New interaction' + '~' * 20 + '\n')
                     f.write(
                         f"You: {self.item_agents[neg_item_id].role_description['item_title']} and the other movie: {self.item_agents[pos_item_id].role_description['item_title']} are recommended to a user.\n\n")
@@ -702,7 +718,7 @@ class AgentCF(SequentialRecommender):
             for item_id, item_context in self.item_agents.items():
                 np.save(f'{path}/item_embeddings_{self.item_id_token[item_id]}.npy',
                         item_context.memory_embedding)
-            with open(f'{path}/user','w') as f:
+            with open(f'{path}/user','w', encoding='utf-8') as f:
                 f.write('user_id:token\tuser_description:token_seq\n')
                 for user_id, user_context in self.user_agents.items():
                     user_description = user_context.memory_1[-1]

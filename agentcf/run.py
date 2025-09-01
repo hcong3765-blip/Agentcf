@@ -78,23 +78,41 @@ def run_baseline(model_name, dataset_name, **kwargs):
 
     # ========== 第十步：模型训练 ==========
     if not config['test_only']:                     # 如果不是仅测试模式
-        # 检查是否有resume_epoch参数
-        resume_epoch = kwargs.get('resume_epoch', None)
-        if resume_epoch is not None:
-            # 加载checkpoint
-            checkpoint_path = kwargs.get('checkpoint_path', f'./saved/{model_name}/checkpoint_epoch_{resume_epoch-1}.pth')
-            loaded_epoch = trainer.load_checkpoint(checkpoint_path)
-            if loaded_epoch != resume_epoch - 1:
-                logger.warning(f"Loaded epoch {loaded_epoch}, but expected {resume_epoch-1}")
-            resume_epoch = loaded_epoch + 1
+        try:
+            # 检查是否有resume_epoch参数
+            resume_epoch = kwargs.get('resume_epoch', None)
+            if resume_epoch is not None:
+                # 加载checkpoint
+                checkpoint_path = kwargs.get('checkpoint_path', f'./saved/{model_name}/checkpoint_epoch_{resume_epoch-1}.pth')
+                loaded_epoch = trainer.load_checkpoint(checkpoint_path)
+                if loaded_epoch != resume_epoch - 1:
+                    logger.warning(f"Loaded epoch {loaded_epoch}, but expected {resume_epoch-1}")
+                resume_epoch = loaded_epoch + 1
 
-        trainer.fit(train_data, valid_data, saved=True, show_progress=config["show_progress"], resume_epoch=resume_epoch)
-        # 💡解释：开始训练过程，saved=True表示保存最佳模型
+            trainer.fit(train_data, valid_data, saved=True, show_progress=config["show_progress"], resume_epoch=resume_epoch)
+            # 💡解释：开始训练过程，saved=True表示保存最佳模型
+            logger.info("✅ 模型训练完成")
+
+        except Exception as e:
+            logger.error(f"❌ 训练过程出现错误: {str(e)}")
+            logger.error(f"错误类型: {type(e).__name__}")
+            import traceback
+            logger.error(f"详细错误信息:\n{traceback.format_exc()}")
+            # 即使训练失败也继续进行评估
 
     # ========== 第十一步：模型评估 ==========
-    test_result = trainer.evaluate(test_data, model_file='./AgentCF-Sep-07-2024_16-09-29.pth', 
-                                  load_best_model=False, show_progress=config["show_progress"])
-    print(test_result)                              # 🐛调试点：打印测试结果
+    try:
+        test_result = trainer.evaluate(test_data, model_file='./AgentCF-Sep-07-2024_16-09-29.pth',
+                                      load_best_model=False, show_progress=config["show_progress"])
+        print(test_result)                              # 🐛调试点：打印测试结果
+        logger.info("✅ 模型评估完成")
+
+    except Exception as e:
+        logger.error(f"❌ 评估过程出现错误: {str(e)}")
+        logger.error(f"错误类型: {type(e).__name__}")
+        import traceback
+        logger.error(f"详细错误信息:\n{traceback.format_exc()}")
+        test_result = {"error": "评估失败", "details": str(e)}
 
     logger.info(set_color("test result", "yellow") + f": {test_result}")  # 彩色日志输出
     

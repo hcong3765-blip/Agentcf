@@ -210,15 +210,35 @@ class LanguageLossTrainer(Trainer):
 
         # 训练循环
         for epoch_idx in range(start_epoch, self.epochs):
-            # 训练一个epoch
-            train_loss = self._train_epoch(train_data, epoch_idx, show_progress=show_progress)
+            try:
+                # 训练一个epoch
+                train_loss = self._train_epoch(train_data, epoch_idx, show_progress=show_progress)
 
-            # 保存检查点（如果有save_checkpoint方法）
-            if hasattr(self, 'save_checkpoint'):
-                self.save_checkpoint(epoch_idx, verbose=verbose)
-            elif saved:
-                # 如果没有save_checkpoint方法，手动保存
-                self._manual_save_checkpoint(epoch_idx, verbose=verbose)
+                # 保存检查点（如果有save_checkpoint方法）
+                if hasattr(self, 'save_checkpoint'):
+                    self.save_checkpoint(epoch_idx, verbose=verbose)
+                elif saved:
+                    # 如果没有save_checkpoint方法，手动保存
+                    self._manual_save_checkpoint(epoch_idx, verbose=verbose)
+
+            except Exception as e:
+                # 打印错误信息但继续训练
+                self.logger.error(f"❌ Epoch {epoch_idx} 训练失败: {str(e)}")
+                self.logger.error(f"错误类型: {type(e).__name__}")
+                import traceback
+                self.logger.error(f"详细错误信息:\n{traceback.format_exc()}")
+
+                # 即使出现错误也尝试保存检查点
+                try:
+                    if saved:
+                        self._manual_save_checkpoint(epoch_idx, verbose=False)
+                        self.logger.info(f"✅ 已保存epoch {epoch_idx}的检查点")
+                except Exception as save_error:
+                    self.logger.error(f"❌ 保存检查点失败: {str(save_error)}")
+
+                # 继续下一个epoch
+                self.logger.info(f"🔄 继续训练下一个epoch...")
+                continue
 
     def _train_epoch(self, train_data, epoch_idx, loss_func=None, show_progress=False):
         """
@@ -242,16 +262,37 @@ class LanguageLossTrainer(Trainer):
 
         # 训练循环
         for batch_idx, interaction in enumerate(iter_data):
-            interaction = interaction.to(self.device)  # 将数据移到指定设备
-            
-            # 显示GPU使用情况
-            if self.gpu_available and show_progress:
-                iter_data.set_postfix_str(
-                    set_color("GPU RAM: " + get_gpu_usage(self.device), "yellow")
-                )
-            
-            # 计算损失（这里调用模型的calculate_loss方法）
-            loss_func(interaction)
+            try:
+                interaction = interaction.to(self.device)  # 将数据移到指定设备
+
+                # 显示GPU使用情况
+                if self.gpu_available and show_progress:
+                    iter_data.set_postfix_str(
+                        set_color("GPU RAM: " + get_gpu_usage(self.device), "yellow")
+                    )
+
+                # 计算损失（这里调用模型的calculate_loss方法）
+                loss_func(interaction)
+
+            except Exception as e:
+                # 打印batch级别的错误信息但继续训练
+                self.logger.error(f"❌ Batch {batch_idx} (Epoch {epoch_idx}) 处理失败: {str(e)}")
+                self.logger.error(f"错误类型: {type(e).__name__}")
+
+                # 记录交互数据的基本信息（用于调试）
+                try:
+                    if hasattr(interaction, 'shape'):
+                        self.logger.error(f"交互数据shape: {interaction.shape}")
+                    elif hasattr(interaction, '__len__'):
+                        self.logger.error(f"交互数据长度: {len(interaction)}")
+                    else:
+                        self.logger.error(f"交互数据类型: {type(interaction)}")
+                except Exception as info_error:
+                    self.logger.error(f"无法获取交互数据信息: {str(info_error)}")
+
+                # 继续下一个batch
+                self.logger.info(f"🔄 跳过有问题的batch {batch_idx}，继续训练...")
+                continue
 
         return total_loss
 
@@ -262,23 +303,35 @@ class LanguageLossTrainer(Trainer):
         import os
         import torch
 
-        # 创建checkpoint目录
-        checkpoint_dir = os.path.join(self.config['checkpoint_dir'], self.config['model'])
-        os.makedirs(checkpoint_dir, exist_ok=True)
+        try:
+            # 创建checkpoint目录
+            checkpoint_dir = os.path.join(self.config['checkpoint_dir'], self.config['model'])
+            os.makedirs(checkpoint_dir, exist_ok=True)
 
-        # 保存模型状态
-        checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint_epoch_{epoch_idx}.pth')
-        checkpoint = {
-            'epoch': epoch_idx,
-            'model_state_dict': self.model.state_dict(),
-            'optimizer_state_dict': getattr(self, 'optimizer', {}).state_dict() if hasattr(self, 'optimizer') else None,
-            'config': self.config,
-        }
+            # 保存模型状态
+            checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint_epoch_{epoch_idx}.pth')
+            checkpoint = {
+                'epoch': epoch_idx,
+                'model_state_dict': self.model.state_dict(),
+                'optimizer_state_dict': getattr(self, 'optimizer', {}).state_dict() if hasattr(self, 'optimizer') else None,
+                'config': self.config,
+            }
 
-        torch.save(checkpoint, checkpoint_path)
+            torch.save(checkpoint, checkpoint_path)
 
-        if verbose:
-            self.logger.info(f'Checkpoint saved to {checkpoint_path}')
+            if verbose:
+                self.logger.info(f'✅ Checkpoint saved to {checkpoint_path}')
+
+        except Exception as e:
+            self.logger.error(f"❌ 保存checkpoint失败 (epoch {epoch_idx}): {str(e)}")
+            # 尝试保存到备用位置
+            try:
+                backup_path = os.path.join('./saved_backup', f'checkpoint_epoch_{epoch_idx}_backup.pth')
+                os.makedirs('./saved_backup', exist_ok=True)
+                torch.save(checkpoint, backup_path)
+                self.logger.info(f'✅ Checkpoint saved to backup location: {backup_path}')
+            except Exception as backup_error:
+                self.logger.error(f"❌ 备份checkpoint也失败: {str(backup_error)}")
 
     def load_checkpoint(self, checkpoint_path, resume_epoch=None):
         """
@@ -289,16 +342,34 @@ class LanguageLossTrainer(Trainer):
         """
         import torch
 
-        if os.path.exists(checkpoint_path):
-            checkpoint = torch.load(checkpoint_path, map_location=self.device)
-            self.model.load_state_dict(checkpoint['model_state_dict'])
+        try:
+            if os.path.exists(checkpoint_path):
+                checkpoint = torch.load(checkpoint_path, map_location=self.device)
 
-            if hasattr(self, 'optimizer') and checkpoint.get('optimizer_state_dict'):
-                self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+                # 加载模型状态
+                try:
+                    self.model.load_state_dict(checkpoint['model_state_dict'])
+                    self.logger.info(f'✅ 模型状态已加载')
+                except Exception as model_error:
+                    self.logger.error(f"❌ 加载模型状态失败: {str(model_error)}")
+                    return 0
 
-            loaded_epoch = checkpoint.get('epoch', 0)
-            self.logger.info(f'Loaded checkpoint from epoch {loaded_epoch}')
-            return loaded_epoch
-        else:
-            self.logger.info(f'Checkpoint {checkpoint_path} not found, starting from scratch')
+                # 加载优化器状态
+                if hasattr(self, 'optimizer') and checkpoint.get('optimizer_state_dict'):
+                    try:
+                        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+                        self.logger.info(f'✅ 优化器状态已加载')
+                    except Exception as opt_error:
+                        self.logger.warning(f"⚠️ 加载优化器状态失败，将重新初始化: {str(opt_error)}")
+
+                loaded_epoch = checkpoint.get('epoch', 0)
+                self.logger.info(f'✅ Checkpoint loaded from epoch {loaded_epoch}')
+                return loaded_epoch
+            else:
+                self.logger.info(f'📝 Checkpoint {checkpoint_path} not found, starting from scratch')
+                return 0
+
+        except Exception as e:
+            self.logger.error(f"❌ 加载checkpoint失败: {str(e)}")
+            self.logger.info(f'📝 将从头开始训练')
             return 0
