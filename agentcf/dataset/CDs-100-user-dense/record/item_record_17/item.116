@@ -13,3 +13,29 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 You update your description as follows: The CD is called 'Tom Petty &amp; The Heartbreakers: Greatest Hits'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+You: Tom Petty &amp; The Heartbreakers: Greatest Hits and the other movie: Vitamin C are recommended to a user.
+
+You have the following description: The CD is called 'Tom Petty &amp; The Heartbreakers: Greatest Hits'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
+
+The other movie has the following description: The CD is called 'Vitamin C'. The category of this CD is: 'Pop; Teen Pop'.
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much.
+
+You update your description as follows: The CD is called 'Tom Petty &amp; The Heartbreakers: Greatest Hits'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
+
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+You: Tom Petty &amp; The Heartbreakers: Greatest Hits and the other movie: Seals &amp; Crofts' Greatest Hits are recommended to a user.
+
+You have the following description: The CD is called 'Tom Petty &amp; The Heartbreakers: Greatest Hits'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
+
+The other movie has the following description: The CD is called 'Seals &amp; Crofts' Greatest Hits'. The category of this CD is: 'Pop; Oldies'.
+
+The user's previous self-description is as follows: I am a CD enthusiast who has discovered a deep appreciation for the melodic harmonies and poignant lyrics found in Pop and Singer-Songwriters genres, as evidenced by my preference for 'Simon and Garfunkel's Greatest Hits'. I find solace in the accessible and emotionally resonant tunes that can be enjoyed time and again. Conversely, I have learned that I am not as drawn to the expansive soundscapes of Classic Rock and AOR, as I found 'Fleetwood Mac' not to my liking. My CD collection now reflects a shift towards CDs that offer a blend of memorable melodies and introspective lyrics, creating a more intimate listening experience.
+
+The user updates his self-description as follows: As a CD enthusiast, I've discovered a newfound appreciation for the energetic and heartfelt music of Tom Petty & The Heartbreakers, which defies my previous aversion to Classic Rock and AOR. Their Greatest Hits album offers a blend of catchy rock melodies and introspective lyrics that resonate with me. Reflecting on my past preferences, I still cherish the melodic harmonies and poignant lyrics found in Pop and Singer-Songwriters genres. However, I've realized that my dislikes are not confined to expansive soundscapes alone, as I found Seals & Crofts' Greatest Hits to be less appealing than anticipated. Moving forward, I seek music that combines the intimate and emotionally resonant qualities of my earlier preferences with the energetic and engaging aspects of my newfound appreciation for Tom Petty's style of rock.
+
+You update your description as follows: 'Tom Petty & The Heartbreakers: Greatest Hits. Classic Rock; AOR. Features energetic, catchy rock with more introspective lyrics than typical of the genre, appealing to those who cherish melody and emotional depth.'
+

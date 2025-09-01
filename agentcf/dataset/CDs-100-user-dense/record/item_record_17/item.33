@@ -26,3 +26,16 @@ The user updates his self-description as follows: As a CD enthusiast, I've refin
 
 You update your description as follows: urn It On Again: The Hits', is: 'Rock; Progressive; Progressive Rock. Features hits with strong, heart-speaking melodies, ideal for fans seeking engaging, radio-friendly nostalgia.'
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+You: Turn It On Again: The Hits and the other movie: Off the Wall are recommended to a user.
+
+You have the following description: urn It On Again: The Hits', is: 'Rock; Progressive; Progressive Rock. Features hits with strong, heart-speaking melodies, ideal for fans seeking engaging, radio-friendly nostalgia.'
+
+The other movie has the following description: ff the Wall') is: 'Dance & Electronic; Disco - upbeat, modern, and beat-driven, perfect for users with preferences for dynamic, engaging, and danceable music, rather than soulful ballads.'
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much.
+
+You update your description as follows: urn It On Again: The Hits', is: 'Rock; Progressive; Progressive Rock. Features hits with strong, heart-speaking melodies, ideal for fans seeking engaging, radio-friendly nostalgia.'
+

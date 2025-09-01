@@ -11,3 +11,14 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 The positive CD has the following updated information: 'Boston' presents a narratively focused, cohesive album with a distinct band sound, ideal for listeners who prefer immersive, thematic unity in their Classic Rock and AOR experiences.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+There are two candidate CDs. 
+ The first CD has the following information: The CD is called 'ZZ Top - Greatest Hits'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.. 
+ The second CD has the following information: The CD is called 'We Can't Dance'. The category of this CD is: 'Rock; Progressive; Progressive Rock'.
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much. 
+
+The positive CD has the following updated information: The CD is called 'ZZ Top - Greatest Hits'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
+

@@ -11,3 +11,14 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 The positive CD has the following updated information: The CD is called 'Blue Moves'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+There are two candidate CDs. 
+ The first CD has the following information: 'Tapestry', a timeless classic appealing to refined tastes, offering a profound and melodic experience that resonates with CD enthusiasts seeking culturally impactful, album-based music, in contrast to the more fleeting appeal of Pop and Dance Pop genres.. 
+ The second CD has the following information: The CD is called 'Made In England'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much. 
+
+The positive CD has the following updated information: 'Tapestry', a timeless classic appealing to refined tastes, offering a profound and melodic experience that resonates with CD enthusiasts seeking culturally impactful, album-based music, in contrast to the more fleeting appeal of Pop and Dance Pop genres.
+

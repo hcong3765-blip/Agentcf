@@ -1,2 +1,15 @@
 ~~~~~~~~~~~~~~~~~~~~Meta information~~~~~~~~~~~~~~~~~~~~
 The item has the following characteristics: {'item_title': 'Greatest Hits', 'item_class': 'R&B; Funk'} 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+You: Greatest Hits and the other movie: Home for Christmas are recommended to a user.
+
+You have the following description: The CD is called 'Greatest Hits'. The category of this CD is: 'R&B; Funk'.
+
+The other movie has the following description: The CD is called 'Home for Christmas'. The category of this CD is: 'Pop; Vocal Pop'.
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much.
+
+You update your description as follows: The CD is called 'Greatest Hits'. The category of this CD is: 'R&B; Funk'.
+

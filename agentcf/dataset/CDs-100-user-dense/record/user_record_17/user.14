@@ -22,3 +22,14 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 The positive CD has the following updated information: bbey Road') is: Iconic CD perfect for fans of rich production, innovative songwriting, and a blend of rock styles, aligning with preferences for albums that have significantly shaped music history.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+There are two candidate CDs. 
+ The first CD has the following information: Default item description (parsing failed): The updated description of 'Can't Slow Down' is: 'Pop; Adult Contemporary CD with energetic rhythms,.... 
+ The second CD has the following information: The CD is called 'ZZ Top - Greatest Hits'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much. 
+
+The positive CD has the following updated information: Default item description (parsing failed): The updated description of 'Can't Slow Down' is: 'Pop; Adult Contemporary CD with energetic rhythms,...
+

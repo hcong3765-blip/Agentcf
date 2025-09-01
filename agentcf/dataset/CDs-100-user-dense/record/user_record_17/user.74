@@ -11,3 +11,14 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 The positive CD has the following updated information: The CD is called 'Revolutions: The Very Best Of Steve Winwood'. The category of this CD is: 'Pop'.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+There are two candidate CDs. 
+ The first CD has the following information: The CD is called 'Monsters of Rock Platinum Edition'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.. 
+ The second CD has the following information: "Physical Graffiti - a British Isles classic, embodying the blues-influenced rock and historical significance cherished by fans of timeless, curriculum rock."
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much. 
+
+The positive CD has the following updated information: The CD is called 'Monsters of Rock Platinum Edition'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
+

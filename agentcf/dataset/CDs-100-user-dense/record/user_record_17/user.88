@@ -11,3 +11,14 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 The positive CD has the following updated information: The CD is called 'Phil Collins - Hits'. The category of this CD is: 'Pop; Adult Contemporary'.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+There are two candidate CDs. 
+ The first CD has the following information: 'Beatles For Sale - Classic Rock; British Invasion. A must-have for fans of The Beatles and the era's spirit, offering a journey through the band's history with timeless melodies, aligning perfectly with preferences for iconic, immersive, and historically rich music experiences.'. 
+ The second CD has the following information: 'Powerage - Classic Rock; AOR. A high-intensity rock album with energetic guitar riffs and catchy anthems, perfectly suited for enthusiasts of vibrant, engaging rock 'n' roll.'
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much. 
+
+The positive CD has the following updated information: 'Beatles For Sale - Classic Rock; British Invasion. A must-have for fans of The Beatles and the era's spirit, offering a journey through the band's history with timeless melodies, aligning perfectly with preferences for iconic, immersive, and historically rich music experiences.'
+

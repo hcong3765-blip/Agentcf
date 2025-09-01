@@ -11,3 +11,14 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 The positive CD has the following updated information: The CD is called 'Tom Petty &amp; The Heartbreakers: Greatest Hits'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+There are two candidate CDs. 
+ The first CD has the following information: The CD is called 'Tattoo You'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.. 
+ The second CD has the following information: 'The Complete Studio Recordings - A guitar-driven compilation with intricate rock riffs and energetic solos, perfect for listeners who appreciate the technical prowess and variety in rock music.'
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much. 
+
+The positive CD has the following updated information: The CD is called 'Tattoo You'. The category of this CD is: 'Classic Rock; Album-Oriented Rock (AOR)'.
+

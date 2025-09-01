@@ -13,3 +13,42 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 You update your description as follows: The CD is called 'The Very Best of Prince'. The category of this CD is: 'Pop; Dance Pop'.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+You: The Very Best of Prince and the other movie: The Essential Stevie Ray Vaughan and Double Trouble are recommended to a user.
+
+You have the following description: The CD is called 'The Very Best of Prince'. The category of this CD is: 'Pop; Dance Pop'.
+
+The other movie has the following description: The CD is called 'The Essential Stevie Ray Vaughan and Double Trouble'. The category of this CD is: 'Blues; Regional Blues; Texas Blues'.
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much.
+
+You update your description as follows: The CD is called 'The Very Best of Prince'. The category of this CD is: 'Pop; Dance Pop'.
+
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+You: The Very Best of Prince and the other movie: Boston are recommended to a user.
+
+You have the following description: The CD is called 'The Very Best of Prince'. The category of this CD is: 'Pop; Dance Pop'.
+
+The other movie has the following description: 'Boston' presents a narratively focused, cohesive album with a distinct band sound, ideal for listeners who prefer immersive, thematic unity in their Classic Rock and AOR experiences.
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much.
+
+You update your description as follows: The CD is called 'The Very Best of Prince'. The category of this CD is: 'Pop; Dance Pop'.
+
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+You: The Very Best of Prince and the other movie: Moondance are recommended to a user.
+
+You have the following description: The CD is called 'The Very Best of Prince'. The category of this CD is: 'Pop; Dance Pop'.
+
+The other movie has the following description: The CD is called 'Moondance'. The category of this CD is: 'R&B; Soul; Blue-Eyed Soul'.
+
+The user's previous self-description is as follows: I am a CD enthusiast who has discovered a deep appreciation for the complexities and creativity found in progressive rock. I find myself drawn to CDs with intricate melodies and concept-driven themes, such as 'Final Cut', which surprised me with its engaging and unique listening experience. While I previously enjoyed the general appeal of popular music, I have come to realize that my tastes lean towards more specialized genres that offer a challenge and a sense of discovery with each listen. I now prefer CDs that provide a departure from the mainstream and an opportunity for deeper musical exploration. Conversely, I have learned that I am less interested in CDs that feature catchy, but ultimately repetitive, pop hits; I seek more substance and artistic depth in my musical selections.
+
+The user updates his self-description as follows: As a CD enthusiast, I've come to appreciate a broader spectrum of music than I once thought. While I still cherish intricate melodies and concept-driven themes, I've discovered a new found enjoyment in the innovative and catchy sounds of pop and dance, as exemplified by 'The Very Best of Prince'. This CD's fusion of artistic genius with accessible, radio-friendly tracks has won me over, revealing a preference for music that can both captivate and resonate widely. However, I've learned that I'm not as inclined towards genres like R&B and soul, as I found 'Moondance' to be less engaging than anticipated, despite its complexities. My tastes now lean towards music that balances creativity with immediate appeal, seeking a fusion of depth and danceability that defies easy categorization.
+
+You update your description as follows: he Very Best of Prince', is: 'Showcasing Prince's artistry, this CD features a blend of innovative, danceable hits with underlying complexity, appealing to users who appreciate a fusion of catchy tunes with musical depth and creativity.'
+

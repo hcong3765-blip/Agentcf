@@ -11,3 +11,14 @@ The user updates his self-description as follows:  I enjoy listening to CDs very
 
 The positive CD has the following updated information: The CD is called 'Raw Power'. The category of this CD is: 'Alternative Rock; Hardcore & Punk; Proto Punk'.
 
+~~~~~~~~~~~~~~~~~~~~New interaction~~~~~~~~~~~~~~~~~~~~
+There are two candidate CDs. 
+ The first CD has the following information: The CD is called 'The Wall'. The category of this CD is: 'Rock; Progressive; Progressive Rock'.. 
+ The second CD has the following information: 'Jump Back: The Best of the Rolling Stones - Classic Rock; AOR. A cohesive, bluesy compilation, ideal for fans with deep appreciation for legendary, historically impactful rock bands.'
+
+The user's previous self-description is as follows:  I enjoy listening to CDs very much.
+
+The user updates his self-description as follows:  I enjoy listening to CDs very much. 
+
+The positive CD has the following updated information: The CD is called 'The Wall'. The category of this CD is: 'Rock; Progressive; Progressive Rock'.
+
