@@ -1,0 +1,4 @@
+# SASRec model configuration
+model: SASRec
+dataset: ml-1m
+config_files: [props/overall.yaml, props/ml-1m.yaml]

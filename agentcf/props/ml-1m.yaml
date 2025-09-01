@@ -1,0 +1,16 @@
+# ml-1m dataset configuration
+dataset: ml-1m
+data_path: dataset/
+field_separator: '\t'
+seq_separator: ' '
+USER_ID_FIELD: user_id
+ITEM_ID_FIELD: item_id
+RATING_FIELD: rating
+TIME_FIELD: timestamp
+NEG_PREFIX: neg_
+load_col:
+    inter: [user_id, item_id, rating, timestamp]
+    user: [user_id, age, gender, occupation]
+    item: [item_id, title, release_year, genre]
+user_load_col: [user_id, age, gender, occupation]
+item_load_col: [item_id, title, release_year, genre]
