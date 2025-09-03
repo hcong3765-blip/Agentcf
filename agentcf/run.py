@@ -1,5 +1,6 @@
 # ========== 导入模块部分 ==========
 import sys                                          # 系统相关功能（如命令行参数）
+import os                                           # 操作系统相关功能（如文件路径检查）
 from logging import getLogger                       # 日志记录器，用于输出程序运行信息
 import argparse                                     # 命令行参数解析器，处理用户输入的参数
 from recbole.config import Config                   # RecBole框架的配置管理器
@@ -102,8 +103,57 @@ def run_baseline(model_name, dataset_name, **kwargs):
 
     # ========== 第十一步：模型评估 ==========
     try:
-        test_result = trainer.evaluate(test_data, model_file='./saved/AgentCF/checkpoint_epoch_0.pth',
-                                      load_best_model=False, show_progress=config["show_progress"])
+        if config['test_only']:
+            # 仅评估模式：需要加载训练后的模型和智能体状态
+            logger.info("🎯 仅评估模式：加载训练后的模型和智能体状态")
+            
+            # 动态构建权重文件路径，支持时间戳目录
+            checkpoint_dir = config['checkpoint_dir'] if 'checkpoint_dir' in config else './saved'
+            model_base_dir = os.path.join(checkpoint_dir, model_name)
+            
+            # 查找最新的checkpoint文件
+            model_file = None
+            if os.path.exists(model_base_dir):
+                # 查找所有run_*目录
+                run_dirs = [d for d in os.listdir(model_base_dir) if d.startswith('run_')]
+                if run_dirs:
+                    # 按时间戳排序，选择最新的
+                    run_dirs.sort(reverse=True)
+                    latest_run_dir = run_dirs[0]
+                    checkpoint_file = os.path.join(model_base_dir, latest_run_dir, 'checkpoint_epoch_0.pth')
+                    if os.path.exists(checkpoint_file):
+                        model_file = checkpoint_file
+                        logger.info(f"✅ 找到最新权重文件: {model_file}")
+                    else:
+                        logger.warning(f"⚠️ 最新run目录中没有找到checkpoint文件: {checkpoint_file}")
+                else:
+                    # 如果没有run_*目录，尝试旧格式
+                    old_checkpoint_file = os.path.join(model_base_dir, 'checkpoint_epoch_0.pth')
+                    if os.path.exists(old_checkpoint_file):
+                        model_file = old_checkpoint_file
+                        logger.info(f"✅ 找到旧格式权重文件: {model_file}")
+                    else:
+                        logger.warning(f"⚠️ 没有找到任何checkpoint文件")
+            else:
+                logger.warning(f"⚠️ 模型目录不存在: {model_base_dir}")
+            
+            # 根据是否找到权重文件决定评估策略
+            if model_file:
+                # 加载权重文件（包含训练后的智能体状态）
+                test_result = trainer.evaluate(test_data, model_file=model_file,
+                                              load_best_model=True, show_progress=config["show_progress"])
+            else:
+                logger.warning("⚠️ 没有找到可用的权重文件")
+                logger.info("🔄 使用当前状态进行测试")
+                # 如果找不到权重文件，使用当前状态（可能不是最优的）
+                test_result = trainer.evaluate(test_data, load_best_model=False, 
+                                              show_progress=config["show_progress"])
+        else:
+            # 训练+评估模式：使用训练后的智能体状态（当前内存中的状态）
+            logger.info("🎯 训练+评估模式：使用训练后的智能体状态")
+            test_result = trainer.evaluate(test_data, load_best_model=False, 
+                                          show_progress=config["show_progress"])
+        
         print(test_result)                              # 🐛调试点：打印测试结果
         logger.info("✅ 模型评估完成")
 

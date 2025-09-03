@@ -888,8 +888,37 @@ class AgentCF(SequentialRecommender):
                     scores[i, item_id] = self.config['recall_budget'] - j
             all_recommendation_ranking_results.append(ranking_result)
 
-
-                        
-
+    def load_other_parameter(self, other_parameter):
+        """
+        加载其他参数，包括智能体状态
+        Args:
+            other_parameter: 包含智能体状态的字典
+        """
+        if other_parameter is not None:
+            # 加载用户智能体状态
+            if 'user_agents' in other_parameter:
+                try:
+                    self.user_agents = other_parameter['user_agents']
+                    self.logger.info(f"✅ 通过load_other_parameter加载用户智能体状态: {len(self.user_agents)} 个智能体")
+                except Exception as e:
+                    self.logger.warning(f"⚠️ 通过load_other_parameter加载用户智能体状态失败: {str(e)}")
+            
+            # 加载物品智能体状态
+            if 'item_agents' in other_parameter:
+                try:
+                    self.item_agents = other_parameter['item_agents']
+                    self.logger.info(f"✅ 通过load_other_parameter加载物品智能体状态: {len(self.item_agents)} 个智能体")
+                except Exception as e:
+                    self.logger.warning(f"⚠️ 通过load_other_parameter加载物品智能体状态失败: {str(e)}")
+            
+            # 加载嵌入智能体状态
+            if 'embedding_agent' in other_parameter:
+                try:
+                    self.embedding_agent = other_parameter['embedding_agent']
+                    self.logger.info("✅ 通过load_other_parameter加载嵌入智能体状态")
+                except Exception as e:
+                    self.logger.warning(f"⚠️ 通过load_other_parameter加载嵌入智能体状态失败: {str(e)}")
+        else:
+            self.logger.info("📝 other_parameter为None，跳过智能体状态加载")
 
     

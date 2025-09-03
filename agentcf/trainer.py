@@ -65,11 +65,38 @@ class LanguageLossTrainer(Trainer):
         # 如果需要加载最佳模型
         if load_best_model:
             checkpoint_file = model_file or self.saved_model_file  # 使用指定文件或默认文件
-            checkpoint = torch.load(checkpoint_file, map_location=self.device)  # 加载检查点
+            checkpoint = torch.load(checkpoint_file, map_location=self.device, weights_only=False)  # 加载检查点
             # 💡语法解释：map_location指定加载到的设备，避免GPU/CPU冲突
             
-            self.model.load_state_dict(checkpoint["state_dict"])     # 加载模型参数
-            self.model.load_other_parameter(checkpoint.get("other_parameter"))  # 加载其他参数
+            # 加载模型参数
+            if "state_dict" in checkpoint:
+                self.model.load_state_dict(checkpoint["state_dict"])
+            elif "model_state_dict" in checkpoint:
+                self.model.load_state_dict(checkpoint["model_state_dict"])
+            else:
+                self.logger.warning("⚠️ Checkpoint中没有找到模型状态字典")
+            
+            # 加载智能体状态
+            if 'user_agents' in checkpoint and hasattr(self.model, 'user_agents'):
+                try:
+                    self.model.user_agents = checkpoint['user_agents']
+                    self.logger.info(f'✅ 评估时加载用户智能体状态: {len(self.model.user_agents)} 个智能体')
+                except Exception as agent_error:
+                    self.logger.warning(f"⚠️ 评估时加载用户智能体状态失败: {str(agent_error)}")
+            
+            if 'item_agents' in checkpoint and hasattr(self.model, 'item_agents'):
+                try:
+                    self.model.item_agents = checkpoint['item_agents']
+                    self.logger.info(f'✅ 评估时加载物品智能体状态: {len(self.model.item_agents)} 个智能体')
+                except Exception as agent_error:
+                    self.logger.warning(f"⚠️ 评估时加载物品智能体状态失败: {str(agent_error)}")
+            
+            if 'embedding_agent' in checkpoint and hasattr(self.model, 'embedding_agent'):
+                try:
+                    self.model.embedding_agent = checkpoint['embedding_agent']
+                    self.logger.info(f'✅ 评估时加载嵌入智能体状态')
+                except Exception as agent_error:
+                    self.logger.warning(f"⚠️ 评估时加载嵌入智能体状态失败: {str(agent_error)}")
             
             message_output = "Loading model structure and parameters from {}".format(checkpoint_file)
             self.logger.info(message_output)
@@ -298,35 +325,57 @@ class LanguageLossTrainer(Trainer):
 
     def _manual_save_checkpoint(self, epoch_idx, verbose=True):
         """
-        手动保存检查点
+        手动保存检查点，包含智能体状态和时间戳
         """
         import os
         import torch
+        from datetime import datetime
 
         try:
-            # 创建checkpoint目录
-            checkpoint_dir = os.path.join(self.config['checkpoint_dir'], self.config['model'])
+            # 创建带时间戳的checkpoint目录
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            checkpoint_dir = os.path.join(self.config['checkpoint_dir'], self.config['model'], f"run_{timestamp}")
             os.makedirs(checkpoint_dir, exist_ok=True)
 
             # 保存模型状态
             checkpoint_path = os.path.join(checkpoint_dir, f'checkpoint_epoch_{epoch_idx}.pth')
+            
+            # 构建checkpoint字典，包含智能体状态
             checkpoint = {
                 'epoch': epoch_idx,
                 'model_state_dict': self.model.state_dict(),
                 'optimizer_state_dict': getattr(self, 'optimizer', {}).state_dict() if hasattr(self, 'optimizer') else None,
                 'config': self.config,
+                'timestamp': timestamp,
             }
+            
+            # 保存智能体状态（如果模型有这些属性）
+            if hasattr(self.model, 'user_agents'):
+                checkpoint['user_agents'] = self.model.user_agents
+                if verbose:
+                    self.logger.info(f"💾 保存用户智能体状态: {len(self.model.user_agents)} 个智能体")
+            
+            if hasattr(self.model, 'item_agents'):
+                checkpoint['item_agents'] = self.model.item_agents
+                if verbose:
+                    self.logger.info(f"💾 保存物品智能体状态: {len(self.model.item_agents)} 个智能体")
+            
+            if hasattr(self.model, 'embedding_agent'):
+                checkpoint['embedding_agent'] = self.model.embedding_agent
+                if verbose:
+                    self.logger.info("💾 保存嵌入智能体状态")
 
             torch.save(checkpoint, checkpoint_path)
 
             if verbose:
                 self.logger.info(f'✅ Checkpoint saved to {checkpoint_path}')
+                self.logger.info(f'🕒 时间戳: {timestamp}')
 
         except Exception as e:
             self.logger.error(f"❌ 保存checkpoint失败 (epoch {epoch_idx}): {str(e)}")
             # 尝试保存到备用位置
             try:
-                backup_path = os.path.join('./saved_backup', f'checkpoint_epoch_{epoch_idx}_backup.pth')
+                backup_path = os.path.join('./saved_backup', f'checkpoint_epoch_{epoch_idx}_backup_{timestamp}.pth')
                 os.makedirs('./saved_backup', exist_ok=True)
                 torch.save(checkpoint, backup_path)
                 self.logger.info(f'✅ Checkpoint saved to backup location: {backup_path}')
@@ -344,7 +393,7 @@ class LanguageLossTrainer(Trainer):
 
         try:
             if os.path.exists(checkpoint_path):
-                checkpoint = torch.load(checkpoint_path, map_location=self.device)
+                checkpoint = torch.load(checkpoint_path, map_location=self.device, weights_only=False)
 
                 # 加载模型状态
                 try:
@@ -362,8 +411,31 @@ class LanguageLossTrainer(Trainer):
                     except Exception as opt_error:
                         self.logger.warning(f"⚠️ 加载优化器状态失败，将重新初始化: {str(opt_error)}")
 
+                # 加载智能体状态
+                if 'user_agents' in checkpoint and hasattr(self.model, 'user_agents'):
+                    try:
+                        self.model.user_agents = checkpoint['user_agents']
+                        self.logger.info(f'✅ 用户智能体状态已加载: {len(self.model.user_agents)} 个智能体')
+                    except Exception as agent_error:
+                        self.logger.warning(f"⚠️ 加载用户智能体状态失败: {str(agent_error)}")
+                
+                if 'item_agents' in checkpoint and hasattr(self.model, 'item_agents'):
+                    try:
+                        self.model.item_agents = checkpoint['item_agents']
+                        self.logger.info(f'✅ 物品智能体状态已加载: {len(self.model.item_agents)} 个智能体')
+                    except Exception as agent_error:
+                        self.logger.warning(f"⚠️ 加载物品智能体状态失败: {str(agent_error)}")
+                
+                if 'embedding_agent' in checkpoint and hasattr(self.model, 'embedding_agent'):
+                    try:
+                        self.model.embedding_agent = checkpoint['embedding_agent']
+                        self.logger.info(f'✅ 嵌入智能体状态已加载')
+                    except Exception as agent_error:
+                        self.logger.warning(f"⚠️ 加载嵌入智能体状态失败: {str(agent_error)}")
+
                 loaded_epoch = checkpoint.get('epoch', 0)
-                self.logger.info(f'✅ Checkpoint loaded from epoch {loaded_epoch}')
+                timestamp = checkpoint.get('timestamp', 'unknown')
+                self.logger.info(f'✅ Checkpoint loaded from epoch {loaded_epoch} (timestamp: {timestamp})')
                 return loaded_epoch
             else:
                 self.logger.info(f'📝 Checkpoint {checkpoint_path} not found, starting from scratch')

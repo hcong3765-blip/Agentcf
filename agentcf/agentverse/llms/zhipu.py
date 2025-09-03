@@ -37,7 +37,7 @@ except ImportError:
 
 
 class ZhipuChatArgs(BaseModelArgs):
-    model: str = Field(default="glm-4")
+    model: str = Field(default="glm-4.5")
     max_tokens: int = Field(default=2048)
     temperature: float = Field(default=1.0)
     top_p: float = Field(default=1.0)
@@ -48,11 +48,11 @@ class ZhipuChatArgs(BaseModelArgs):
 
 
 class ZhipuCompletionArgs(ZhipuChatArgs):
-    model: str = Field(default="glm-4")
+    model: str = Field(default="glm-4.5")
 
 
 class ZhipuEmbeddingArgs(BaseModelArgs):
-    model: str = Field(default="embedding-2")
+    model: str = Field(default="embedding-3")
 
 
 class ZhipuAPI:
@@ -99,7 +99,7 @@ class ZhipuAPI:
         if HAS_ZHIPU_SDK and self.client:
             try:
                 response = self.client.chat.completions.create(
-                    model=kwargs.get("model", "glm-4"),
+                    model=kwargs.get("model", "glm-4.5"),
                     messages=messages,
                     max_tokens=kwargs.get("max_tokens", 2048),
                     temperature=kwargs.get("temperature", 1.0),
@@ -125,7 +125,7 @@ class ZhipuAPI:
         
         # 回退到HTTP请求
         data = {
-            "model": kwargs.get("model", "glm-4"),
+            "model": kwargs.get("model", "glm-4.5"),
             "messages": messages,
             "max_tokens": kwargs.get("max_tokens", 2048),
             "temperature": kwargs.get("temperature", 1.0),
@@ -169,7 +169,7 @@ class ZhipuAPI:
         if HAS_ZHIPU_SDK and self.async_client:
             try:
                 response = await self.async_client.chat.completions.create(
-                    model=kwargs.get("model", "glm-4"),
+                    model=kwargs.get("model", "glm-4.5"),
                     messages=messages,
                     max_tokens=kwargs.get("max_tokens", 2048),
                     temperature=kwargs.get("temperature", 1.0),
@@ -204,7 +204,7 @@ class ZhipuAPI:
         if HAS_ZHIPU_SDK and self.client:
             try:
                 response = self.client.embeddings.create(
-                    model=kwargs.get("model", "embedding-2"),
+                    model=kwargs.get("model", "embedding-3"),
                     input=input_text
                 )
                 
@@ -219,7 +219,7 @@ class ZhipuAPI:
         
         # 回退到HTTP请求
         data = {
-            "model": kwargs.get("model", "embedding-2"),
+            "model": kwargs.get("model", "embedding-3"),
             "input": input_text
         }
         
@@ -238,6 +238,7 @@ class ZhipuAPI:
 
 @llm_registry.register("glm-4")
 @llm_registry.register("glm-3-turbo")
+@llm_registry.register("glm-4.5")
 class ZhipuChat(BaseChatModel):
     args: ZhipuChatArgs = Field(default_factory=ZhipuChatArgs)
     api_key_list: list = []
@@ -380,6 +381,7 @@ class ZhipuCompletion(BaseCompletionModel):
 
 
 @llm_registry.register("embedding-2")
+@llm_registry.register("embedding-3")
 class ZhipuEmbedding(BaseCompletionModel):
     args: ZhipuEmbeddingArgs = Field(default_factory=ZhipuEmbeddingArgs)
     api_key_list: list = []
